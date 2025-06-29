@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Empathy Landscaping</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .service-list { margin-top: 20px; }
+    .service-item { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Empathy Landscaping Services</h1>
+  <div id="services" class="service-list"></div>
+  <h2>Book a Service</h2>
+  <form id="booking-form">
+    <input type="text" id="name" placeholder="Your Name" required><br>
+    <input type="email" id="email" placeholder="Email" required><br>
+    <select id="service"></select><br>
+    <input type="date" id="date" required><br>
+    <button type="submit">Request Service</button>
+  </form>
+  <p id="status"></p>
+  <script>
+    async function loadServices() {
+      const res = await fetch('/api/services');
+      const services = await res.json();
+      const select = document.getElementById('service');
+      const container = document.getElementById('services');
+      services.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.name;
+        opt.textContent = `${s.name} - $${s.price}`;
+        select.appendChild(opt);
+
+        const div = document.createElement('div');
+        div.className = 'service-item';
+        div.textContent = `${s.name}: $${s.price}`;
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById('booking-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const booking = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        service: document.getElementById('service').value,
+        date: document.getElementById('date').value,
+      };
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(booking)
+      });
+      if (res.ok) {
+        document.getElementById('status').textContent = 'Request received! We will contact you to schedule.';
+      } else {
+        document.getElementById('status').textContent = 'Failed to submit request.';
+      }
+    });
+
+    loadServices();
+  </script>
+</body>
+</html>

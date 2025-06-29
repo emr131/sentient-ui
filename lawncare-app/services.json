@@ -1,0 +1,6 @@
+[
+  { "name": "Mowing", "price": 40 },
+  { "name": "Edging", "price": 15 },
+  { "name": "Leaf Removal", "price": 50 },
+  { "name": "Mulching", "price": 60 }
+]
